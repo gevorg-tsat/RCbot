@@ -1,0 +1,32 @@
+version: "3.11"
+
+services:
+  db:
+    image: postgres:latest
+    container_name: db
+    # command: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./sql:/sql/
+    env_file:
+      - ./secrets/.env
+    environment:
+      - "DB_HOST=localhost"
+      - "DB_PORT=5432"
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+    ports:
+      - "5432:5432"
+  bot:
+    build: .
+    container_name: tg-bot
+    command: go run main.go
+    volumes:
+      - .:/code
+    ports:
+      - "8081:8081"
+    env_file:
+      - ./secrets/.env
+    depends_on:
+      - db
+volumes:
+  postgres_data:
