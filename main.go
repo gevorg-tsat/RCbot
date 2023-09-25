@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/joho/godotenv"
 	"log"
-	"untitledPetProject/internal/db"
+	"untitledPetProject/internal/bot"
 )
 
 func main() {
@@ -11,9 +11,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = db.Connect()
+	err = bot.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
