@@ -4,31 +4,22 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"os"
 )
 
-const (
-	host     = "localhost"
-	user     = "postgres"
-	password = "postgres"
-	dbname   = "postgres"
-	port     = 5432
-)
-
-type Product struct {
-	Id    int64 `gorm:"primarykey"`
-	Code  string
-	Price int64
+func getDSN() string {
+	dsn := fmt.Sprint("host=", os.Getenv("DB_HOST"),
+		" user=", os.Getenv("POSTGRES_USER"),
+		" password=", os.Getenv("POSTGRES_PASSWORD"),
+		" dbname=", os.Getenv("DB_NAME"),
+		" port=", os.Getenv("DB_PORT"),
+		` sslmode=disable
+		TimeZone=Europe/Moscow`)
+	return dsn
 }
 
 func Connect() (*gorm.DB, error) {
-	dsn := fmt.Sprint("host=", host,
-		" user=", user,
-		" password=", password,
-		" dbname=", dbname,
-		" port=", port,
-		` sslmode=disable
-		TimeZone=Europe/Moscow`)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(getDSN()), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
