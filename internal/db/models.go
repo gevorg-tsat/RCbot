@@ -7,24 +7,25 @@ import (
 
 type User struct {
 	gorm.Model
-	Id       uint64 `gorm:"primarykey"`
+	Id       int64 `gorm:"primarykey"`
 	TGtag    string
 	IsActive bool
 }
 
 type RCEvent struct {
 	gorm.Model
-	Id          uint64 `gorm:"primarykey"`
+	Id          int64 `gorm:"primarykey"`
 	DateStarted time.Time
 	IsActive    bool
+	Pairs       []Pair `gorm:"foreignKey:EventId"`
 }
 
 type Pair struct {
 	gorm.Model
-	EventId uint64
+	EventId int64
 	Event   RCEvent
-	User1Id uint64
+	User1Id int64
 	User1   User
-	User2Id uint64
+	User2Id int64
 	User2   User
 }

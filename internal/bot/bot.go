@@ -3,6 +3,7 @@ package bot
 import (
 	tgbot "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/labstack/gommon/log"
+	"gorm.io/gorm"
 	"os"
 	database "untitledPetProject/internal/db"
 )
@@ -17,11 +18,17 @@ func createBot() (*tgbot.BotAPI, error) {
 	return bot, nil
 }
 
+type handler struct {
+	bot *tgbot.BotAPI
+	db  *gorm.DB
+}
+
 func Run() error {
-	_, err := database.Connect()
+	db, err := database.Connect()
 	if err != nil {
 		return err
 	}
+	log.Info("Connected to Database")
 	bot, err := createBot()
 	log.Info("Bot connected")
 	if err != nil {
@@ -29,15 +36,10 @@ func Run() error {
 	}
 	updateConfig := tgbot.NewUpdate(0)
 	updateConfig.Timeout = 60
+	commandHandler := handler{bot: bot, db: db}
 	for update := range bot.GetUpdatesChan(updateConfig) {
 		if update.Message.Command() == "start" {
-			// TODO sync or async??
-			go func() {
-				_, err = bot.Send(tgbot.NewMessage(update.Message.Chat.ID, "Hello"))
-				if err != nil {
-					log.Error(err)
-				}
-			}()
+			commandHandler.StartMessage(&update)
 		}
 	}
 	return nil
