@@ -4,6 +4,7 @@ import (
 	tgbot "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/labstack/gommon/log"
 	"os"
+	database "untitledPetProject/internal/db"
 )
 
 func createBot() (*tgbot.BotAPI, error) {
@@ -17,6 +18,10 @@ func createBot() (*tgbot.BotAPI, error) {
 }
 
 func Run() error {
+	_, err := database.Connect()
+	if err != nil {
+		return err
+	}
 	bot, err := createBot()
 	log.Info("Bot connected")
 	if err != nil {
@@ -26,6 +31,7 @@ func Run() error {
 	updateConfig.Timeout = 60
 	for update := range bot.GetUpdatesChan(updateConfig) {
 		if update.Message.Command() == "start" {
+			// TODO sync or async??
 			go func() {
 				_, err = bot.Send(tgbot.NewMessage(update.Message.Chat.ID, "Hello"))
 				if err != nil {

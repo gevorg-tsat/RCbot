@@ -11,8 +11,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = bot.Run()
-	if err != nil {
+	if err = bot.Run(); err != nil {
 		log.Fatal(err)
 	}
 }

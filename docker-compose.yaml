@@ -4,16 +4,11 @@ services:
   db:
     image: postgres:latest
     container_name: db
-    # command: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data/
       - ./sql:/sql/
     env_file:
       - ./secrets/.env
-    environment:
-      - "DB_HOST=localhost"
-      - "DB_PORT=5432"
-      - "POSTGRES_HOST_AUTH_METHOD=trust"
     ports:
       - "5432:5432"
   bot:

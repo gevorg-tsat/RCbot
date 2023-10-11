@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"github.com/labstack/gommon/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"os"
@@ -13,17 +14,17 @@ func getDSN() string {
 		" password=", os.Getenv("POSTGRES_PASSWORD"),
 		" dbname=", os.Getenv("DB_NAME"),
 		" port=", os.Getenv("DB_PORT"),
-		` sslmode=disable
-		TimeZone=Europe/Moscow`)
+		" sslmode=disable TimeZone=Europe/Moscow")
 	return dsn
 }
 
 func Connect() (*gorm.DB, error) {
+	log.Info(getDSN())
 	db, err := gorm.Open(postgres.Open(getDSN()), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	err = db.AutoMigrate(&Product{})
+	err = db.AutoMigrate(&User{}, &RCEvent{}, &Pair{})
 	if err != nil {
 		return nil, err
 	}
