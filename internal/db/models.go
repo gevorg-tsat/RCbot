@@ -29,3 +29,7 @@ type Pair struct {
 	User2Id int64
 	User2   User
 }
+type Admin struct {
+	gorm.Model
+	Id int64 `gorm:"primarykey"`
+}

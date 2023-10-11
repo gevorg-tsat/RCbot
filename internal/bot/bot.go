@@ -38,8 +38,13 @@ func Run() error {
 	updateConfig.Timeout = 60
 	commandHandler := handler{bot: bot, db: db}
 	for update := range bot.GetUpdatesChan(updateConfig) {
-		if update.Message.Command() == "start" {
-			commandHandler.StartMessage(&update)
+		command := update.Message.Command()
+		if command == "start" {
+			go commandHandler.StartMessage(&update)
+		} else if command == "stop" {
+			go commandHandler.Disactivate(&update)
+		} else if command == "start_event" && isAdmin(update.Message.Chat.ID, db) {
+			go commandHandler.CreateEvent(&update)
 		}
 	}
 	return nil
