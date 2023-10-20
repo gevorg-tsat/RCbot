@@ -1,9 +1,9 @@
-version: "3.11"
+version: "1.21"
 
 services:
   db:
     image: postgres:latest
-    container_name: db
+    container_name: postgres_container
     volumes:
       - postgres_data:/var/lib/postgresql/data/
       - ./sql:/sql/
@@ -14,7 +14,7 @@ services:
   bot:
     build: .
     container_name: tg-bot
-    command: go run main.go
+    command: go run cmd/main.go
     volumes:
       - .:/code
     ports:

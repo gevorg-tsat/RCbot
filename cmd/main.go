@@ -1,9 +1,9 @@
 package main
 
 import (
+	"RCbot/internal/bot"
 	"github.com/joho/godotenv"
 	"log"
-	"untitledPetProject/internal/bot"
 )
 
 func main() {
